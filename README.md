@@ -1,6 +1,6 @@
 # Adaptive_Ground_Control-Decision_System
 
-# Description:
+   # Description:
 
 Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time ground/terrain info predictions and interfaces for control-decision adaptation
 
@@ -10,8 +10,7 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
 │                              (C++ / Python)                                 │
 └─────────────────────────────────────────────────────────────────────────────┘
 
-   IMU sensor
-   (100 Hz)
+   IMU sensor - orientation_XYZW / angular_velocity_XYZ / linear_acceleration_XYZ(10 features)
         │
         ▼
 ┌───────────────────┐
@@ -31,7 +30,7 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
                             │
                             ▼
 ┌──────────────────────────────────────────────────────────────────┐
-│                    Feature Extractor (utils.py)                  │
+│                    Feature Extractor (📄utils.py)                 │
 │  Extract per‑window:                                             │
 │   • current frame (10)                                           │
 │   • mean of window (10)                                          │
@@ -96,3 +95,11 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
 │   • Detect elevation obstacles                                   │
 └──────────────────────────────────────────────────────────────────┘  
 <pre/>
+
+
+   
+   <pre>
+                                                                  Model Architecture: Vogue_Ming
+   <img width="3865" height="2844" alt="deepseek_mermaid_20260517_9ba975" src="https://github.com/user-attachments/assets/82d829f3-62bf-4a21-af02-1d97356f5683" />
+   
+      <pre/>
