@@ -10,7 +10,7 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
 │                              (C++ / Python)                                 │
 └─────────────────────────────────────────────────────────────────────────────┘
 
-   IMU sensor - orientation_XYZW / angular_velocity_XYZ / linear_acceleration_XYZ(10 features)
+   IMU sensor → orientation (w,x,y,z) / angular_velocity (x,y,z) / linear_acceleration (x,y,z) → 10 features
         │
         ▼
 ┌───────────────────┐
@@ -36,7 +36,7 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
 │   • mean of window (10)                                          │
 │   • std of window (10)                                           │
 │   • diff (curr - prev) (10)                                      │
-│  → 40‑dim feature vector                                         │
+│  → **40‑dim feature vector**                                     │
 └───────────────────────────┬──────────────────────────────────────┘
                             │
                             ▼
@@ -46,60 +46,71 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
 └───────────────────────────┬──────────────────────────────────────┘
                             │
                             ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                       Vogue_Ming Model                           │
-│                   (Multi‑task MLP, PyTorch)                      │
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │                  Shared Backbone (MLP)                      ││
-│  │   Linear(40→128) → BN → ReLU → Dropout(0.4)                 ││
-│  │   Linear(128→64) → BN → ReLU → Dropout(0.4)                 ││
-│  └───────────────────┬─────────────────────────────────────────┘│
-│                      │                                           │
-│          ┌───────────┼───────────┬───────────────┐              │
-│          ▼           ▼           ▼               ▼              │
-│   ┌────────────┐ ┌────────┐ ┌──────────┐ ┌──────────────┐       │
-│   │Class Head  │ │Slope   │ │Roughness │ │Elevation     │       │
-│   │Linear(64→C)│ │Head    │ │Head      │ │Change Head   │       │
-│   │            │ │Linear→1│ │Linear→1  │ │Linear→1      │       │
-│   └─────┬──────┘ └───┬────┘ └────┬─────┘ └──────┬───────┘       │
-│         │            │           │              │               │
-│    softmax          └───────────┴──────────────┘               │
-│         │                    │                                  │
-│    predicted          continuous predictions                    │
-│    class index        (slope, roughness, elev_change)           │
-└─────────┼────────────────────┼──────────────────────────────────┘
-          │                    │
-          ▼                    ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                    LabelEncoder (inverse)                        │
-│               (saved as label_encoder.pkl)                       │
-│         convert class index → string (e.g. "carpet")             │
-└─────────┬────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                              Vogue_Ming Model                                 │
+│                          (Multi‑task, PyTorch)                                │
+│  ┌────────────────────────────────────────────────────────────────────────┐  │
+│  │                           40‑dim input                                 │  │
+│  │                                  │                                      │  │
+│  │                    ┌─────────────┴─────────────┐                        │  │
+│  │                    ▼                           ▼                        │  │
+│  │           [0:10] (current frame)      [10:40] (window stats)            │  │
+│  │                    │                           │                        │  │
+│  │                    ▼                           ▼                        │  │
+│  │          frame_branch                 window_branch                     │  │
+│  │         Linear(10→60)                Linear(30→180)                     │  │
+│  │         BN, ReLU, Dropout            BN, ReLU, Dropout                  │  │
+│  │                    │                           │                        │  │
+│  │                    └───────────┬───────────────┘                        │  │
+│  │                                ▼                                        │  │
+│  │                    Concatenate → 240‑dim                                │  │
+│  │                                │                                        │  │
+│  │                                ▼                                        │  │
+│  │                    Shared Backbone (MLP)                                │  │
+│  │          Linear(240→480) → BN → ReLU → Dropout                          │  │
+│  │          Linear(480→240) → BN → ReLU → Dropout                          │  │
+│  │          Linear(240→120) → BN → ReLU → Dropout                          │  │
+│  │          Linear(120→40)  → BN → ReLU → Dropout                          │  │
+│  │                                │                                        │  │
+│  │          ┌───────────┬────────┼───────────┬────────────┐               │  │
+│  │          ▼           ▼        ▼           ▼            ▼               │  │
+│  │   ┌──────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────────┐     │  │
+│  │   │Class Head│ │Slope    │ │Roughness│ │Elevation│ │ Confidence  │     │  │
+│  │   │Linear(40→│ │Head     │ │Head     │ │Head     │ │(softmax max)│     │  │
+│  │   │C)        │ │Linear→1 │ │Linear→1 │ │Linear→1 │ │             │     │  │
+│  │   └────┬─────┘ └────┬────┘ └────┬────┘ └────┬────┘ └──────┬──────┘     │  │
+│  │        │            │          │           │              │            │  │
+│  │    softmax          └──────────┴───────────┘              │            │  │
+│  │        │                        │                         │            │  │
+│  │   class index           continuous predictions            │            │  │
+│  │   (0..C-1)            (slope, roughness, elev)            │            │  │
+│  └────────┼────────────────────────┼─────────────────────────┼────────────┘  │
+│           │                        │                         │               │
+└───────────┼────────────────────────┼─────────────────────────┼───────────────┘
+            │                        │                         │
+            ▼                        ▼                         ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    LabelEncoder (inverse)                                    │
+│               (saved as label_encoder.pkl)                                   │
+│         convert class index → string (e.g. "carpet")                         │
+└─────────┬────────────────────────────────────────────────────────────────────┘
           │
           ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                    Publish /terrain_info                         │
-│   Custom message (TerrainInfo.msg):                              │
-│   • string surface                                               │
-│   • float32 slope                                                │
-│   • float32 roughness                                            │
-│   • float32 elevation_change                                     │
-│   • float32 confidence                                           │
-└─────────┬────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    Publish /terrain_info                                     │
+│   Custom message (TerrainInfo.msg):                                          │
+│   • string surface                                                           │
+│   • float32 slope                                                            │
+│   • float32 roughness                                                        │
+│   • float32 elevation_change                                                 │
+│   • float32 confidence                                                       │
+└─────────┬────────────────────────────────────────────────────────────────────┘
           │
           ▼
-┌──────────────────────────────────────────────────────────────────┐
-│               Downstream consumers (control, planning)           │
-│   • Adjust max speed based on slope/roughness                   │
-│   • Switch control gains per surface type                       │
-│   • Detect elevation obstacles                                   │
-└──────────────────────────────────────────────────────────────────┘  
+┌──────────────────────────────────────────────────────────────────────────────┐
+│               Downstream consumers (control, planning)                       │
+│   • Adjust max speed based on slope/roughness                               │
+│   • Switch control gains per surface type                                   │
+│   • Detect elevation obstacles                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
 <pre/>
-
-
-   
-   <pre>
-                                                                  Model Architecture: Vogue_Ming
-   <img width="3865" height="2844" alt="deepseek_mermaid_20260517_9ba975" src="https://github.com/user-attachments/assets/82d829f3-62bf-4a21-af02-1d97356f5683" />
-   
-      <pre/>
