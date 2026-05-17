@@ -1,9 +1,10 @@
 # Adaptive_Ground_Control-Decision_System
 
-   # Description:
+   ## Description:
 
 Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time ground/terrain info predictions and interfaces for control-decision adaptation
 
+   ## Architecture:
 <pre>
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                           ROS 2 REAL‑TIME PIPELINE                          │
@@ -113,4 +114,49 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
 │   • Switch control gains per surface type                                   │
 │   • Detect elevation obstacles                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
-<pre/>
+</pre>
+
+   ### Model - Vogue_Ming:
+
+Original datasets from :
+
+   @misc{career-con-2019,
+    author = {Maggie and Sohier Dane},
+    title = {CareerCon 2019 - Help Navigate Robots },
+    year = {2019},
+    howpublished = {\url{https://kaggle.com/competitions/career-con-2019}},
+    note = {Kaggle}
+}
+<pre>
+🔧Model trained by reconstracted dataset: 📄
+</pre>
+<pre>
+<img width="2100" height="750" alt="training_curves" src="https://github.com/user-attachments/assets/19b4f963-0fbe-40e0-b6bd-90b3ba84b4cb" />
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
