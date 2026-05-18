@@ -128,7 +128,9 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
     note = {Kaggle}
 }
 
-🔧Model trained by reconstracted dataset: 📄[frame_multi_target.csv](https://github.com/JimingYang25/Adaptive_Ground_Control-Decision_System)
+#### 🔧Model trained by reconstracted dataset: 📄[frame_multi_target.csv](https://github.com/JimingYang25/Adaptive_Ground_Control-Decision_System) in method 📄[data_processor.py](https://github.com/JimingYang25/Adaptive_Ground_Control-Decision_System)
+
+
 <pre>
 Latest training log:
    Totola epoch : 121
