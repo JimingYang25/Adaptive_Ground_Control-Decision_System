@@ -128,7 +128,18 @@ Original datasets from :
     note = {Kaggle}
 }
 <pre>
-🔧Model trained by reconstracted dataset: 📄
+🔧Model trained by reconstracted dataset: 📄<file>frame_multi_target.csv</file>
+
+Latest training log:
+   Totola epoch : 121
+   
+   Optimal Save Point (Epoch : 111)
+
+   Optimal Validation Accauracy:0.9265（92.65%）
+
+   Relevent Loss：Train Loss = 0.7415, Val Loss = 0.6637
+
+   Early Stopping Enabled at Epoch 121 (non-decreasing Validation loss for 10 Epoch )
 </pre>
 <pre>
 <img width="2100" height="750" alt="training_curves" src="https://github.com/user-attachments/assets/19b4f963-0fbe-40e0-b6bd-90b3ba84b4cb" />
