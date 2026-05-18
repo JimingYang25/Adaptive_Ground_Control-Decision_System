@@ -3,12 +3,12 @@
   <name>terrain_classifier_pkg</name>
   <version>0.0.1</version>
   <description>Terrain classification node with Python and future C++ support</description>
-  <maintainer email="ming@example.com">ming</maintainer>
+  <maintainer email="2132720978@qq.com">Jiming Yang</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <!-- Python 节点运行时依赖 -->
+  <!-- Python node dependices -->
   <exec_depend>rclpy</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>

@@ -1,3 +1,5 @@
+#launch for classifier_node --Maintainer: Jiming Yang
+
 import os
 from launch import LaunchDescription
 from launch_ros.actions import Node
@@ -58,3 +60,5 @@ def generate_launch_description():
         declare_imu_topic,
         terrain_node,
     ])
+
+#launch for classifier_node --Maintainer: Jiming Yang

@@ -1,3 +1,5 @@
+# Classifier model with Architecture --Maintainer: Jiming Yang
+
 import torch
 import torch.nn as nn
 
@@ -34,3 +36,6 @@ class Vogue_Ming(nn.Module):
         rough = self.rough_head(feat)
         elev = self.elev_head(feat)
         return cls_logits, slope, rough, elev
+    
+# Classifier model with Architecture --Maintainer: Jiming Yang
+

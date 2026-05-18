@@ -1,3 +1,5 @@
+# --Maintainer: Jiming Yang
+
 cmake_minimum_required(VERSION 3.8)
 project(terrain_interfaces)
 
@@ -25,3 +27,5 @@ if(BUILD_TESTING)
 endif()
 
 ament_package()
+
+# --Maintainer: Jiming Yang

@@ -1,3 +1,5 @@
+# --Maintainer: Jiming Yang
+
 cmake_minimum_required(VERSION 3.8)
 project(terrain_classifier_pkg)
 
@@ -19,7 +21,7 @@ install(
   DIRECTORY
     terrain_classifier_pkg/
   DESTINATION
-    lib/python3.12/site-packages/${PROJECT_NAME}  # 注意 Python 版本号
+    lib/python3.12/site-packages/${PROJECT_NAME}  
   PATTERN "__pycache__" EXCLUDE
 )
 
@@ -45,3 +47,5 @@ install(
 )
 
 ament_package()
+
+# --Maintainer: Jiming Yang
