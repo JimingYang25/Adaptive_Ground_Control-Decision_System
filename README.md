@@ -127,9 +127,9 @@ Original datasets from :
     howpublished = {\url{https://kaggle.com/competitions/career-con-2019}},
     note = {Kaggle}
 }
-<pre>
-🔧Model trained by reconstracted dataset: 📄<file>frame_multi_target.csv</file>
 
+🔧Model trained by reconstracted dataset: 📄[frame_multi_target.csv](https://github.com/JimingYang25/Adaptive_Ground_Control-Decision_System)
+<pre>
 Latest training log:
    Totola epoch : 121
    
@@ -148,8 +148,8 @@ Latest training log:
 
 ## Quick Start🔧
 
-```markdown
-## 1. Create a ROS2 workspace (if not already)
+
+## 1. Create a ROS2 workspace / Enter your workplaces
 
 ```bash
 mkdir -p ~/ros2_ws/src
@@ -161,7 +161,7 @@ source install/setup.bash
 ## 2. Clone the branch
 
 ```bash
-cd ~/ros2_ws/src
+cd ~/ros2_ws
 git clone -b Jazzy https://github.com/JimingYang25/Adaptive_Ground_Control-Decision_System.git
 ```
 
@@ -264,8 +264,8 @@ Apache 2.0
 
 ## Repository Links
 
-- [terrain_interfaces](https://github.com/JimingYang25/terrain_interfaces)
-- [terrain_classifier_pkg](https://github.com/JimingYang25/terrain_classifier_pkg)
+- [terrain_interfaces](https://github.com/JimingYang25/Adaptive_Ground_Control-Decision_System)
+- [terrain_classifier_pkg](https://github.com/JimingYang25/Adaptive_Ground_Control-Decision_System)
 
 ---
 
