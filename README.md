@@ -146,8 +146,15 @@ Latest training log:
 
 </pre>
 
+## Quick Start🔧
 
+### 1. Clone repository
 
+Under your workplace📁
+
+```bash
+git clone -b Jazzy https://github.com/JimingYang25/Adaptive_Ground_Control-Decision_System.git
+```
 
 
 
