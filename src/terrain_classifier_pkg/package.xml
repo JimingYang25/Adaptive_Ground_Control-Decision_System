@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>terrain_classifier_pkg</name>
+  <version>0.0.1</version>
+  <description>Terrain classification node with Python and future C++ support</description>
+  <maintainer email="ming@example.com">ming</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- Python 节点运行时依赖 -->
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>terrain_interfaces</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-torch</exec_depend>
+  <exec_depend>python3-joblib</exec_depend>
+  <exec_depend>python3-sklearn</exec_depend>
+  
+  <depend>rclcpp</depend>
+  <depend>libtorch</depend>  
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

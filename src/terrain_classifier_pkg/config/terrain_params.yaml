@@ -1,0 +1,18 @@
+/**:
+  ros__parameters:
+    # Size of sliding window (frame: K)
+    window_size: 30
+    
+    # Max publish frequency (HZ)
+    publish_freq_hz: 10.0
+    
+    # IMU msg topic name
+    imu_topic: "/imu/data_raw"
+    
+    # Model/Scaler/Label_Encoder file path
+    model_file: "models/multi_task_best.pth"
+    scaler_file: "models/scaler.pkl"
+    label_encoder_file: "models/label_encoder.pkl"
+    
+    # whether show debug info
+    debug: false
