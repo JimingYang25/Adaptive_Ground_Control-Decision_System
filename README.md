@@ -22,16 +22,16 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
           ▼
 ┌──────────────────────────────────────────────────────────────────┐
 │                      Sliding Window Buffer                       │
-│                     (deque, length = K = 30)                     │
+│                     (deque, length = K )                         │
 │   ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐  │
-│   │ t-29│ t-28│ ... │ t-3 │ t-2 │ t-1 │ t   │     │     │     │  │
+│   │ t-K │t-K+1│ ... │ t-3 │ t-2 │ t-1 │ t   │     │     │     │  │
 │   └─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘  │
-│   each element: 10‑dim IMU (quat + angular + linear)            │
+│   each element: 10‑dim IMU (quat + angular + linear)             │
 └───────────────────────────┬──────────────────────────────────────┘
                             │
                             ▼
 ┌──────────────────────────────────────────────────────────────────┐
-│                    Feature Extractor (📄utils.py)                 │
+│                    Feature Extractor                             |
 │  Extract per‑window:                                             │
 │   • current frame (10)                                           │
 │   • mean of window (10)                                          │
@@ -48,31 +48,31 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
                             │
                             ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                              Vogue_Ming Model                                 │
-│                          (Multi‑task, PyTorch)                                │
+│                              Vogue_Ming Model                                │
+│                          (Multi‑task, PyTorch)                               │
 │  ┌────────────────────────────────────────────────────────────────────────┐  │
 │  │                           40‑dim input                                 │  │
-│  │                                  │                                      │  │
-│  │                    ┌─────────────┴─────────────┐                        │  │
-│  │                    ▼                           ▼                        │  │
-│  │           [0:10] (current frame)      [10:40] (window stats)            │  │
-│  │                    │                           │                        │  │
-│  │                    ▼                           ▼                        │  │
-│  │          frame_branch                 window_branch                     │  │
-│  │         Linear(10→60)                Linear(30→180)                     │  │
-│  │         BN, ReLU, Dropout            BN, ReLU, Dropout                  │  │
-│  │                    │                           │                        │  │
-│  │                    └───────────┬───────────────┘                        │  │
-│  │                                ▼                                        │  │
-│  │                    Concatenate → 240‑dim                                │  │
-│  │                                │                                        │  │
-│  │                                ▼                                        │  │
-│  │                    Shared Backbone (MLP)                                │  │
-│  │          Linear(240→480) → BN → ReLU → Dropout                          │  │
-│  │          Linear(480→240) → BN → ReLU → Dropout                          │  │
-│  │          Linear(240→120) → BN → ReLU → Dropout                          │  │
-│  │          Linear(120→40)  → BN → ReLU → Dropout                          │  │
-│  │                                │                                        │  │
+│  │                                  │                                     │  │
+│  │                    ┌─────────────┴─────────────┐                       │  │
+│  │                    ▼                           ▼                       │  │
+│  │           [0:10] (current frame)      [10:40] (window stats)           │  │
+│  │                    │                           │                       │  │
+│  │                    ▼                           ▼                       │  │
+│  │          frame_branch                 window_branch                    │  │
+│  │         Linear(10→60)                Linear(30→180)                    │  │
+│  │         BN, ReLU, Dropout            BN, ReLU, Dropout                 │  │
+│  │                    │                           │                       │  │
+│  │                    └───────────┬───────────────┘                       │  │
+│  │                                ▼                                       │  │
+│  │                    Concatenate → 240‑dim                               │  │
+│  │                                │                                       │  │
+│  │                                ▼                                       │  │
+│  │                    Shared Backbone (MLP)                               │  │
+│  │          Linear(240→480) → BN → ReLU → Dropout                         │  │
+│  │          Linear(480→240) → BN → ReLU → Dropout                         │  │
+│  │          Linear(240→120) → BN → ReLU → Dropout                         │  │
+│  │          Linear(120→40)  → BN → ReLU → Dropout                         │  │
+│  │                               │                                        │  │
 │  │          ┌───────────┬────────┼───────────┬────────────┐               │  │
 │  │          ▼           ▼        ▼           ▼            ▼               │  │
 │  │   ┌──────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────────┐     │  │
@@ -80,8 +80,8 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
 │  │   │Linear(40→│ │Head     │ │Head     │ │Head     │ │(softmax max)│     │  │
 │  │   │C)        │ │Linear→1 │ │Linear→1 │ │Linear→1 │ │             │     │  │
 │  │   └────┬─────┘ └────┬────┘ └────┬────┘ └────┬────┘ └──────┬──────┘     │  │
-│  │        │            │          │           │              │            │  │
-│  │    softmax          └──────────┴───────────┘              │            │  │
+│  │        │            │           │           │             │            │  │
+│  │    softmax          └───────────┴───────────┘             │            │  │
 │  │        │                        │                         │            │  │
 │  │   class index           continuous predictions            │            │  │
 │  │   (0..C-1)            (slope, roughness, elev)            │            │  │
@@ -109,16 +109,16 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
           │
           ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│               Downstream consumers (control, planning)                       │
-│   • Adjust max speed based on slope/roughness                               │
-│   • Switch control gains per surface type                                   │
-│   • Detect elevation obstacles                                              │
+│               Downstream consumers (Other Framework / Simulation)            │
+│   • Adjust max speed based on slope/roughness                                │
+│   • Switch control gains per surface type                                    │
+│   • Detect elevation obstacles                                               │
 └──────────────────────────────────────────────────────────────────────────────┘
 </pre>
 
    ### Model - Vogue_Ming:
 
-Original datasets from :
+#### Original datasets from :
 
    @misc{career-con-2019,
     author = {Maggie and Sohier Dane},
