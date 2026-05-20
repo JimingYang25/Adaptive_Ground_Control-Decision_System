@@ -59,16 +59,16 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
 │  │                    │                           │                       │  │
 │  │                    ▼                           ▼                       │  │
 │  │          frame_branch                 window_branch                    │  │
-│  │         Linear(10→60)                Linear(30→180)                    │  │
+│  │         Linear(10→80)                Linear(30→240)                    │  │
 │  │         BN, ReLU, Dropout            BN, ReLU, Dropout                 │  │
 │  │                    │                           │                       │  │
 │  │                    └───────────┬───────────────┘                       │  │
 │  │                                ▼                                       │  │
-│  │                    Concatenate → 240‑dim                               │  │
+│  │                    Concatenate → 320‑dim                               │  │
 │  │                                │                                       │  │
 │  │                                ▼                                       │  │
 │  │                          Shared Backbone                               │  │
-│  │                Linear(240→40) → BN → ReLU → Dropout                    │  │
+│  │             320 → Linear(240→40) → BN → ReLU → Dropout                 │  │
 │  │                               │                                        │  │
 │  │          ┌───────────┬────────┼───────────┬────────────┐               │  │
 │  │          ▼           ▼        ▼           ▼            ▼               │  │
