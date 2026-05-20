@@ -17,11 +17,11 @@ class Vogue_Ming(nn.Module):
     """Multitask MLP:Shared labelencoder + Classification header + Regression header(slope,roughness,height variation)"""
     def __init__(self, input_dim=40, hidden_dims=[240,40], num_classes=9, dropout=0.2):
         super().__init__()
-        self.frame_branch=nn.Sequential(nn.Linear(10,60),nn.BatchNorm1d(60),nn.ReLU(),nn.Dropout(dropout),)
-        self.window_branch=nn.Sequential(nn.Linear(30,180),nn.BatchNorm1d(180),nn.ReLU(),nn.Dropout(dropout))
+        self.frame_branch=nn.Sequential(nn.Linear(10,80),nn.BatchNorm1d(80),nn.ReLU(),nn.Dropout(dropout),)
+        self.window_branch=nn.Sequential(nn.Linear(30,240),nn.BatchNorm1d(240),nn.ReLU(),nn.Dropout(dropout))
         # shared layers
         layers = []
-        prev_dim = 240
+        prev_dim = 320
         
         for h in hidden_dims:
             layers.append(nn.Linear(prev_dim, h))
