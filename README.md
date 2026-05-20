@@ -280,7 +280,7 @@ If you use this project in your research or academic work, please cite our repos
   publisher={GitHub},
   journal={GitHub Repository},
   url={https://github.com/JimingYang25/Adaptive_Ground_Control-Decision_System},
-  note={Accessed: 2026-05-18}
+  note={Published: 2026-05-18}
 }
 ```
 
