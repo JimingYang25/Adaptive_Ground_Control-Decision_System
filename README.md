@@ -67,11 +67,8 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
 │  │                    Concatenate → 240‑dim                               │  │
 │  │                                │                                       │  │
 │  │                                ▼                                       │  │
-│  │                    Shared Backbone (MLP)                               │  │
-│  │          Linear(240→480) → BN → ReLU → Dropout                         │  │
-│  │          Linear(480→240) → BN → ReLU → Dropout                         │  │
-│  │          Linear(240→120) → BN → ReLU → Dropout                         │  │
-│  │          Linear(120→40)  → BN → ReLU → Dropout                         │  │
+│  │                          Shared Backbone                               │  │
+│  │                Linear(240→40) → BN → ReLU → Dropout                    │  │
 │  │                               │                                        │  │
 │  │          ┌───────────┬────────┼───────────┬────────────┐               │  │
 │  │          ▼           ▼        ▼           ▼            ▼               │  │
@@ -133,18 +130,19 @@ Based on model ( Vogue_Ming ) trained in pytorch framework,provide real-time gro
 
 <pre>
 Latest training log:
-   Totola epoch : 121
+   Totola epoch : 109
    
-   Optimal Save Point (Epoch : 111)
+   Optimal Save Point (Epoch : 100)
 
-   Optimal Validation Accauracy:0.9265（92.65%）
+   Optimal Validation Accauracy:0.9294（92.94%）
 
-   Relevent Loss：Train Loss = 0.7415, Val Loss = 0.6637
+   Relevent Loss：Train Loss: 0.6647 | Val Loss: 0.6656 | Val Acc: 0.9294
 
-   Early Stopping Enabled at Epoch 121 (non-decreasing Validation loss for 10 Epoch )
+   Early Stopping Enabled at Epoch 109 (non-decreasing Validation loss for 10 Epoch )
 </pre>
 <pre>
-<img width="2100" height="750" alt="training_curves" src="https://github.com/user-attachments/assets/19b4f963-0fbe-40e0-b6bd-90b3ba84b4cb" />
+<img width="2100" height="750" alt="training_curves" src="https://github.com/user-attachments/assets/ea6bb2c6-630a-49f7-884e-5ec6f22c1d3d" />
+
 
 </pre>
 
