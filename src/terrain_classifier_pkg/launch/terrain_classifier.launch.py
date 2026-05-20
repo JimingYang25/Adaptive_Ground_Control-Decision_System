@@ -36,11 +36,16 @@ def generate_launch_description():
         description='IMU data topic name'
     )
     
+    declare_debug = DeclareLaunchArgument(
+    'debug',
+    default_value='false',
+    description='Enable debug logging'
+    )
     
     terrain_node = Node(
         package='terrain_classifier_pkg',
         executable='terrain_node.py',
-        name='terrain_classifier',
+        name='terrain_classifier_node',
         output='screen',
         parameters=[
             LaunchConfiguration('params_file'),   
@@ -58,6 +63,7 @@ def generate_launch_description():
         declare_window_size,
         declare_publish_freq,
         declare_imu_topic,
+        declare_debug,
         terrain_node,
     ])
 

@@ -1,6 +1,6 @@
 # .yaml for users to modify parameters --Maintainer:Jiming Yang
 
-/**:
+terrain_classifier_node:
   ros__parameters:
     # Size of sliding window (frame: K)
     window_size: 30
