@@ -1,0 +1,12 @@
+IMU topic (/imu/data_raw)
+    ↓
+Terrain Classification Node (terrain_classifier_node)
+    ↓
+  - Maintain a sliding buffer of 30 frames
+  - Extract 10-dimensional IMU features per frame
+  - Calculate 40-dimensional statistical features every 30 frames
+  - Standardization → Model inference
+    ↓
+Publish terrain information topic (/terrain_info)
+    ↓
+Downstream control and planning modules

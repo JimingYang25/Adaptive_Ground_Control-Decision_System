@@ -1,3 +1,5 @@
+# This file for model training --Maintainer: Jiming Yang
+
 import pandas as pd
 import numpy as np
 import torch
@@ -13,7 +15,7 @@ import joblib
 # ------------------------------
 class Vogue_Ming(nn.Module):
     """Multitask MLP:Shared labelencoder + Classification header + Regression header(slope,roughness,height variation)"""
-    def __init__(self, input_dim=40, hidden_dims=[480,240,120,40], num_classes=9, dropout=0.4):
+    def __init__(self, input_dim=40, hidden_dims=[240,40], num_classes=9, dropout=0.2):
         super().__init__()
         self.frame_branch=nn.Sequential(nn.Linear(10,60),nn.BatchNorm1d(60),nn.ReLU(),nn.Dropout(dropout),)
         self.window_branch=nn.Sequential(nn.Linear(30,180),nn.BatchNorm1d(180),nn.ReLU(),nn.Dropout(dropout))
@@ -31,7 +33,7 @@ class Vogue_Ming(nn.Module):
         
         # classification header
         self.class_head = nn.Linear(prev_dim, num_classes)
-        # 回归头
+        # regression header
         self.slope_head = nn.Linear(prev_dim, 1)
         self.rough_head = nn.Linear(prev_dim, 1)
         self.elev_head = nn.Linear(prev_dim, 1)
@@ -46,31 +48,31 @@ class Vogue_Ming(nn.Module):
         return cls_logits, slope, rough, elev
 
 # ------------------------------
-# 1. 加载数据
+# 1. Load data
 # ------------------------------
 df = pd.read_csv('./Modified_Datasets/frame_multi_target.csv')
 
-# 特征列（以 feat_ 开头）
+# Feature columns (starting with feat_)
 feature_cols = [c for c in df.columns if c.startswith('feat_')]
 X = df[feature_cols].values.astype(np.float32)
 
-# 目标列
+# target columns
 y_cls = df['label_class'].values.astype(np.int64)
 y_slope = df['slope'].values.astype(np.float32)
 y_rough = df['roughness'].values.astype(np.float32)
 y_elev = df['elevation_change'].values.astype(np.float32)
 groups = df['series_id'].values
 
-# 类别数
+# total classes
 num_classes = len(np.unique(y_cls))
-print(f"类别数: {num_classes}")
 
-# 标签编码器（用于推理时输出字符串，这里仅保存）
+
+# label encoder (int 2 string)
 le = LabelEncoder()
-le.fit(y_cls)   # 用整数标签拟合（实际逆变换只能得到数字，但格式统一）
+le.fit(y_cls)   
 
 # ------------------------------
-# 2. 划分训练/验证集（分组）
+# 2. Divide datasets
 # ------------------------------
 gss = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
 train_idx, val_idx = next(gss.split(X, y_cls, groups=groups))
@@ -82,14 +84,14 @@ y_rough_train, y_rough_val = y_rough[train_idx], y_rough[val_idx]
 y_elev_train, y_elev_val = y_elev[train_idx], y_elev[val_idx]
 
 # ------------------------------
-# 3. 标准化（基于训练集）
+# 3. Standardlization
 # ------------------------------
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train_raw)
 X_val = scaler.transform(X_val_raw)
 
 # ------------------------------
-# 4. 转换为 PyTorch 张量
+# 4. Tensor transformation
 # ------------------------------
 X_train_t = torch.tensor(X_train, dtype=torch.float32)
 X_val_t = torch.tensor(X_val, dtype=torch.float32)
@@ -111,7 +113,7 @@ train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
 # ------------------------------
-# 5. 初始化模型、损失函数、优化器
+# 5. Initalize model/loss function/optimizer
 # ------------------------------
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = Vogue_Ming().to(device)
@@ -119,11 +121,11 @@ model = Vogue_Ming().to(device)
 cls_criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
 reg_criterion = nn.MSELoss()
 
-optimizer = optim.AdamW(model.parameters(), lr=0.001, weight_decay=1e-4)
+optimizer = optim.AdamW(model.parameters(), lr=0.0005, weight_decay=1e-4)
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', patience=5, factor=0.5)
 
 # ------------------------------
-# 6. 训练循环
+# 6. Train
 # ------------------------------
 epochs = 160
 best_val_loss = float('inf')
@@ -153,7 +155,7 @@ for epoch in range(epochs):
         optimizer.step()
         total_loss += total_batch.item()
 
-    # 验证
+    
     model.eval()
     val_loss = 0.0
     val_cls_correct = 0
@@ -190,16 +192,18 @@ for epoch in range(epochs):
     else:
         no_improve += 1
         if no_improve >= patience:
-            print("早停触发")
+            print("Early stoping triggered")
             break
 
-print("训练完成，最佳模型已保存")
+print("Save best model")
 
 # ------------------------------
-# 7. 保存标准化器和标签编码器
+# 7. save model/encoder
 # ------------------------------
 import os
 os.makedirs('./Models', exist_ok=True)
 joblib.dump(scaler, './Models/scaler.pkl')
 joblib.dump(le, './Models/label_encoder.pkl')
-print("标准化器和标签编码器已保存")
+print("Save")
+
+# This file for model training --Maintainer: Jiming Yang

@@ -1,19 +1,23 @@
+# This file provide input extraction --Maintainer: Jiming Yang
+
 import numpy as np
 
 def extract_features(buffer):
     """
-    buffer: list of 10-element lists, 长度 = K (30)
-    返回: 40维特征向量 (numpy array)
+    buffer: list of 10-element lists, length = K (default = 30)
+    return: 40-dim features_array (numpy array)
     """
     buf = np.array(buffer)   # (K, 10)
     feat = []
-    # 当前帧（最新）
+    # current frame
     feat.extend(buf[-1])
-    # 均值
+    # mean value
     feat.extend(np.mean(buf, axis=0))
-    # 标准差
+    # standard subtraction
     feat.extend(np.std(buf, axis=0))
-    # 差分（当前帧 - 前一帧）
+    # differentiation (current_frame - last_frame)
     diff = buf[-1] - buf[-2] if len(buf) >= 2 else np.zeros(10)
     feat.extend(diff)
     return np.array(feat, dtype=np.float32)
+
+# This file provide input extraction --Maintainer: Jiming Yang
